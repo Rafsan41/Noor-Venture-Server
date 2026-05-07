@@ -461,11 +461,39 @@
           }
         },
         {
-          "name": "AI — Match Investors to Proposal (Admin)",
+          "name": "AI — Match Investors to Proposal",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{base_url}}/api/ai/match-investors/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","ai","match-investors","PROPOSAL_ID_HERE"] }
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/match-investors", "host": ["{{base_url}}"], "path": ["api","ai","match-investors"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proposalId\": \"PROPOSAL_ID_HERE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI — Analyze Proposal by ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/analyze-proposal", "host": ["{{base_url}}"], "path": ["api","ai","analyze-proposal"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proposalId\": \"PROPOSAL_ID_HERE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI — Chat Advisor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/chat", "host": ["{{base_url}}"], "path": ["api","ai","chat"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What is Musharakah and how does it differ from regular loans?\",\n  \"history\": []\n}"
+            }
           }
         },
         {
