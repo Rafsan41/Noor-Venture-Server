@@ -1,0 +1,596 @@
+{
+  "info": {
+    "name": "NoorVenture API",
+    "description": "Complete API collection for NoorVenture — Halal Business Financing Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000", "type": "string" }
+  ],
+  "item": [
+
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register — Investor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/sign-up/email", "host": ["{{base_url}}"], "path": ["api","auth","sign-up","email"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Investor\",\n  \"email\": \"testinvestor@noorventure.com\",\n  \"password\": \"Test1234!\",\n  \"role\": \"INVESTOR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register — Business Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/sign-up/email", "host": ["{{base_url}}"], "path": ["api","auth","sign-up","email"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Owner\",\n  \"email\": \"testowner@noorventure.com\",\n  \"password\": \"Test1234!\",\n  \"role\": \"BUSINESS_OWNER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login successful', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/sign-in/email", "host": ["{{base_url}}"], "path": ["api","auth","sign-in","email"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@noorventure.com\",\n  \"password\": \"Admin1234!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — Business Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/sign-in/email", "host": ["{{base_url}}"], "path": ["api","auth","sign-in","email"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rafsan@noorventure.com\",\n  \"password\": \"Owner1234!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login — Investor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/sign-in/email", "host": ["{{base_url}}"], "path": ["api","auth","sign-in","email"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"investor1@noorventure.com\",\n  \"password\": \"Invest1234!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/auth/get-session", "host": ["{{base_url}}"], "path": ["api","auth","get-session"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/auth/sign-out", "host": ["{{base_url}}"], "path": ["api","auth","sign-out"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👤 Users",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/users/me", "host": ["{{base_url}}"], "path": ["api","users","me"] }
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/users/me", "host": ["{{base_url}}"], "path": ["api","users","me"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"bio\": \"Updated bio here\",\n  \"phone\": \"01711999888\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Public Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/users/USER_ID_HERE/public", "host": ["{{base_url}}"], "path": ["api","users","USER_ID_HERE","public"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📋 Proposals",
+      "item": [
+        {
+          "name": "Browse All Proposals (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/proposals?page=1&limit=12",
+              "host": ["{{base_url}}"],
+              "path": ["api","proposals"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "12" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Browse — Filter by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/proposals?category=Technology",
+              "host": ["{{base_url}}"],
+              "path": ["api","proposals"],
+              "query": [{ "key": "category", "value": "Technology" }]
+            }
+          }
+        },
+        {
+          "name": "Browse — Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/proposals?search=clinic",
+              "host": ["{{base_url}}"],
+              "path": ["api","proposals"],
+              "query": [{ "key": "search", "value": "clinic" }]
+            }
+          }
+        },
+        {
+          "name": "Browse — Filter by Risk Level",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/proposals?riskLevel=LOW",
+              "host": ["{{base_url}}"],
+              "path": ["api","proposals"],
+              "query": [{ "key": "riskLevel", "value": "LOW" }]
+            }
+          }
+        },
+        {
+          "name": "Browse — Sort by Raised",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/proposals?sort=raised_desc",
+              "host": ["{{base_url}}"],
+              "path": ["api","proposals"],
+              "query": [{ "key": "sort", "value": "raised_desc" }]
+            }
+          }
+        },
+        {
+          "name": "Get Proposal Stats (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/proposals/stats", "host": ["{{base_url}}"], "path": ["api","proposals","stats"] }
+          }
+        },
+        {
+          "name": "Get All Categories (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/proposals/categories", "host": ["{{base_url}}"], "path": ["api","proposals","categories"] }
+          }
+        },
+        {
+          "name": "Get Proposal by Slug (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/proposals/slug/techub-bd-b2b-saas-platform", "host": ["{{base_url}}"], "path": ["api","proposals","slug","techub-bd-b2b-saas-platform"] }
+          }
+        },
+        {
+          "name": "Get Proposal by ID (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/proposals/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","proposals","PROPOSAL_ID_HERE"] }
+          }
+        },
+        {
+          "name": "Create Proposal (Owner)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/proposals", "host": ["{{base_url}}"], "path": ["api","proposals"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My New Halal Business Proposal\",\n  \"description\": \"This is a detailed description of our business that explains what we do, who we serve, why it is unique, and how we plan to use the investment funds wisely. We are committed to Shariah-compliant operations.\",\n  \"businessType\": \"Retail\",\n  \"category\": \"Technology\",\n  \"location\": \"Dhaka\",\n  \"fundingGoal\": 250000,\n  \"minimumInvestment\": 5000,\n  \"profitSharePercent\": 35,\n  \"duration\": 18,\n  \"deadline\": \"2026-12-31T00:00:00.000Z\",\n  \"expectedReturn\": 25,\n  \"images\": [],\n  \"documents\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Proposals (Owner)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/proposals/my/list", "host": ["{{base_url}}"], "path": ["api","proposals","my","list"] }
+          }
+        },
+        {
+          "name": "Update Proposal (Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/proposals/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","proposals","PROPOSAL_ID_HERE"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description with more details.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Approve Proposal (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/proposals/PROPOSAL_ID_HERE/status", "host": ["{{base_url}}"], "path": ["api","proposals","PROPOSAL_ID_HERE","status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reject Proposal (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/proposals/PROPOSAL_ID_HERE/status", "host": ["{{base_url}}"], "path": ["api","proposals","PROPOSAL_ID_HERE","status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"REJECTED\"\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "💰 Investments",
+      "item": [
+        {
+          "name": "Invest in Proposal (Investor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/investments", "host": ["{{base_url}}"], "path": ["api","investments"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proposalId\": \"PROPOSAL_ID_HERE\",\n  \"amount\": 25000\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Portfolio (Investor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/investments/portfolio", "host": ["{{base_url}}"], "path": ["api","investments","portfolio"] }
+          }
+        },
+        {
+          "name": "Get Investment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/investments/INVESTMENT_ID_HERE", "host": ["{{base_url}}"], "path": ["api","investments","INVESTMENT_ID_HERE"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👛 Wallet",
+      "item": [
+        {
+          "name": "Get My Wallet",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/wallet", "host": ["{{base_url}}"], "path": ["api","wallet"] }
+          }
+        },
+        {
+          "name": "Get Wallet Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/wallet/summary", "host": ["{{base_url}}"], "path": ["api","wallet","summary"] }
+          }
+        },
+        {
+          "name": "Deposit to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/wallet/deposit", "host": ["{{base_url}}"], "path": ["api","wallet","deposit"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100000\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/wallet/transactions?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api","wallet","transactions"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📊 Reports",
+      "item": [
+        {
+          "name": "Submit Monthly Report (Owner)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/reports", "host": ["{{base_url}}"], "path": ["api","reports"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proposalId\": \"PROPOSAL_ID_HERE\",\n  \"month\": 5,\n  \"year\": 2026,\n  \"revenue\": 280000,\n  \"expenses\": 130000,\n  \"notes\": \"Strong month. New corporate client onboarded. Expenses slightly higher due to equipment maintenance.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Reports (Owner)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/reports/my", "host": ["{{base_url}}"], "path": ["api","reports","my"] }
+          }
+        },
+        {
+          "name": "Get Reports by Proposal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/reports/proposal/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","reports","proposal","PROPOSAL_ID_HERE"] }
+          }
+        },
+        {
+          "name": "Get Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/reports/REPORT_ID_HERE", "host": ["{{base_url}}"], "path": ["api","reports","REPORT_ID_HERE"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🤖 AI Features",
+      "item": [
+        {
+          "name": "AI — Analyze Proposal",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/analyze-proposal", "host": ["{{base_url}}"], "path": ["api","ai","analyze-proposal"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"HalalFood Delivery — Shariah Compliant Food App\",\n  \"description\": \"We are building Bangladesh's first halal-certified food delivery platform connecting verified halal restaurants with Muslim consumers. Our verification system ensures all restaurants follow strict halal guidelines. We have 50 partner restaurants in Dhaka and plan to expand nationwide.\",\n  \"category\": \"Food & Beverage\",\n  \"businessType\": \"Food Delivery App\",\n  \"location\": \"Dhaka\",\n  \"fundingGoal\": 400000,\n  \"profitSharePercent\": 35,\n  \"duration\": 18\n}"
+            }
+          }
+        },
+        {
+          "name": "AI — Analyze & Save to Proposal (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/ai/analyze-proposal/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","ai","analyze-proposal","PROPOSAL_ID_HERE"] }
+          }
+        },
+        {
+          "name": "AI — Generate Proposal Draft",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/generate-proposal", "host": ["{{base_url}}"], "path": ["api","ai","generate-proposal"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"GreenBake BD\",\n  \"type\": \"Food Production\",\n  \"category\": \"Food & Beverage\",\n  \"location\": \"Chittagong\",\n  \"problem\": \"There are no affordable organic, preservative-free bakeries in Chittagong serving health-conscious consumers\",\n  \"solution\": \"We produce 100% organic baked goods using locally sourced ingredients delivered fresh daily to homes and offices\",\n  \"targetMarket\": \"Health-conscious middle-income families and corporate offices in Chittagong\",\n  \"fundingGoal\": 150000\n}"
+            }
+          }
+        },
+        {
+          "name": "AI — Match Investors to Proposal (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/ai/match-investors/PROPOSAL_ID_HERE", "host": ["{{base_url}}"], "path": ["api","ai","match-investors","PROPOSAL_ID_HERE"] }
+          }
+        },
+        {
+          "name": "AI — Analyze Profit Report",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/ai/analyze-report", "host": ["{{base_url}}"], "path": ["api","ai","analyze-report"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proposalId\": \"PROPOSAL_ID_HERE\",\n  \"month\": 5,\n  \"year\": 2026,\n  \"revenue\": 320000,\n  \"expenses\": 175000,\n  \"netProfit\": 145000,\n  \"investorShare\": 58000\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🛡️ Admin",
+      "item": [
+        {
+          "name": "Get Platform Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/stats", "host": ["{{base_url}}"], "path": ["api","admin","stats"] }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api","admin","users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Users — Filter by Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users?role=INVESTOR",
+              "host": ["{{base_url}}"],
+              "path": ["api","admin","users"],
+              "query": [{ "key": "role", "value": "INVESTOR" }]
+            }
+          }
+        },
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users?search=rafsan",
+              "host": ["{{base_url}}"],
+              "path": ["api","admin","users"],
+              "query": [{ "key": "search", "value": "rafsan" }]
+            }
+          }
+        },
+        {
+          "name": "Suspend User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/admin/users/USER_ID_HERE/status", "host": ["{{base_url}}"], "path": ["api","admin","users","USER_ID_HERE","status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUSPENDED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Activate User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/admin/users/USER_ID_HERE/status", "host": ["{{base_url}}"], "path": ["api","admin","users","USER_ID_HERE","status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Pending Proposals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/proposals/pending", "host": ["{{base_url}}"], "path": ["api","admin","proposals","pending"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📈 Stats",
+      "item": [
+        {
+          "name": "Live Platform Stats (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stats/live", "host": ["{{base_url}}"], "path": ["api","stats","live"] }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Better Auth required tables ──────────────────────────────────────────────
+
+model user {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Custom fields
+  role          Role      @default(INVESTOR)
+  status        UserStatus @default(ACTIVE)
+  phone         String?
+  nidNumber     String?   @unique
+  nidVerified   Boolean   @default(false)
+  bio           String?
+
+  // Relations
+  sessions      session[]
+  accounts      account[]
+  proposals     Proposal[]
+  investments   Investment[]
+  wallet        Wallet?
+  profitReports ProfitReport[]
+}
+
+model session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  BUSINESS_OWNER
+  INVESTOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum ProposalStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  FUNDED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum InvestmentStatus {
+  ACTIVE
+  COMPLETED
+  WITHDRAWN
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  INVESTMENT
+  PROFIT
+  REFUND
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  DELAYED
+}
+
+// ── Business Models ──────────────────────────────────────────────────────────
+
+model Proposal {
+  id                  String         @id @default(cuid())
+  title               String
+  slug                String         @unique
+  description         String         @db.Text
+  businessType        String
+  category            String
+  location            String
+  fundingGoal         Decimal        @db.Decimal(12, 2)
+  minimumInvestment   Decimal        @db.Decimal(12, 2)
+  profitSharePercent  Decimal        @db.Decimal(5, 2)
+  ownerSharePercent   Decimal        @db.Decimal(5, 2)
+  duration            Int
+  images              String[]
+  documents           String[]
+  status              ProposalStatus @default(PENDING)
+  riskLevel           RiskLevel      @default(MEDIUM)
+  aiScore             Int?
+  aiAnalysis          Json?
+  aiTags              String[]
+  deadline            DateTime
+  amountRaised        Decimal        @db.Decimal(12, 2) @default(0)
+  totalInvestors      Int            @default(0)
+  expectedReturn      Decimal?       @db.Decimal(5, 2)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  owner               user           @relation(fields: [ownerId], references: [id])
+  ownerId             String
+
+  investments         Investment[]
+  profitReports       ProfitReport[]
+  milestones          Milestone[]
+}
+
+model Investment {
+  id            String           @id @default(cuid())
+  amount        Decimal          @db.Decimal(12, 2)
+  status        InvestmentStatus @default(ACTIVE)
+  profitEarned  Decimal          @db.Decimal(12, 2) @default(0)
+  sharePercent  Decimal          @db.Decimal(8, 4)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  investor      user             @relation(fields: [investorId], references: [id])
+  investorId    String
+  proposal      Proposal         @relation(fields: [proposalId], references: [id])
+  proposalId    String
+}
+
+model Wallet {
+  id            String        @id @default(cuid())
+  balance       Decimal       @db.Decimal(12, 2) @default(0)
+  totalInvested Decimal       @db.Decimal(12, 2) @default(0)
+  totalEarned   Decimal       @db.Decimal(12, 2) @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user          user          @relation(fields: [userId], references: [id])
+  userId        String        @unique
+
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  type        TransactionType
+  amount      Decimal         @db.Decimal(12, 2)
+  description String
+  reference   String?
+  createdAt   DateTime        @default(now())
+
+  wallet      Wallet          @relation(fields: [walletId], references: [id])
+  walletId    String
+}
+
+model ProfitReport {
+  id              String   @id @default(cuid())
+  month           Int
+  year            Int
+  revenue         Decimal  @db.Decimal(12, 2)
+  expenses        Decimal  @db.Decimal(12, 2)
+  netProfit       Decimal  @db.Decimal(12, 2)
+  investorShare   Decimal  @db.Decimal(12, 2)
+  notes           String?  @db.Text
+  aiInsights      Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  proposal        Proposal @relation(fields: [proposalId], references: [id])
+  proposalId      String
+  submittedBy     user     @relation(fields: [submittedById], references: [id])
+  submittedById   String
+
+  @@unique([proposalId, month, year])
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime
+  status      MilestoneStatus @default(PENDING)
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+
+  proposal    Proposal        @relation(fields: [proposalId], references: [id])
+  proposalId  String
+}
