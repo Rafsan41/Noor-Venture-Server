@@ -3,7 +3,7 @@ import { socketEvents } from "../../lib/socket";
 import { uniqueSlug } from "../../utils/slugify";
 import { ProposalQuery } from "../../types";
 import { CreateProposalInput, UpdateProposalInput } from "./proposal.schema";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../generated/prisma/client.js";
 
 export const proposalService = {
   async create(ownerId: string, input: CreateProposalInput) {
