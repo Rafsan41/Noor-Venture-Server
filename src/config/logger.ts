@@ -11,18 +11,10 @@ const devFormat = combine(
 
 const prodFormat = combine(timestamp(), json());
 
-const transports: winston.transport[] = [
-  new winston.transports.Console(),
-];
-
-// File transports only in non-serverless environments (Vercel filesystem is read-only)
-if (env.NODE_ENV !== "production") {
-  transports.push(new winston.transports.File({ filename: "logs/error.log", level: "error" }));
-  transports.push(new winston.transports.File({ filename: "logs/combined.log" }));
-}
-
+// Console-only transport — Vercel (and any serverless platform) captures stdout/stderr.
+// File transports are never used because serverless filesystems are read-only.
 export const logger = winston.createLogger({
   level: env.NODE_ENV === "production" ? "warn" : "debug",
   format: env.NODE_ENV === "production" ? prodFormat : devFormat,
-  transports,
+  transports: [new winston.transports.Console()],
 });
